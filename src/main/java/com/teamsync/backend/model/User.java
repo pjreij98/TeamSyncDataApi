@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,9 +29,7 @@ public class User {
     private String email;
 
     private String firstName;
-
     private String lastName;
-
     private String profilePictureUrl;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -43,8 +42,8 @@ public class User {
 
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Task> tasks;
+    @Column(name = "active_project_id")
+    private Long activeProjectId;
 
     @PrePersist
     protected void onCreate() {
@@ -56,4 +55,3 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 }
-

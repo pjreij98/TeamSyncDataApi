@@ -27,4 +27,10 @@ public class TaskRequestVo {
     @NotNull(message = "Deadline is mandatory")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime deadline;
+
+    private Long projectId;
+
+    private Long sprintId;
+
+    private Long userId;
 }

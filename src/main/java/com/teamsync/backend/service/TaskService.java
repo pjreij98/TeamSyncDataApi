@@ -1,9 +1,10 @@
 package com.teamsync.backend.service;
 
 import com.teamsync.backend.controller.TaskWebSocketController;
-import com.teamsync.backend.model.Task;
-import com.teamsync.backend.model.User;
+import com.teamsync.backend.model.*;
+import com.teamsync.backend.repository.ProjectRepository;
 import com.teamsync.backend.repository.TaskRepository;
+import com.teamsync.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +18,25 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private TaskWebSocketController webSocketController;
 
-    public List<Task> getTasksByUser(User user) {
-        return taskRepository.findByUser(user);
+    public List<Task> getTasksByUser(Long userId) {
+        return taskRepository.findByUserId(userId);
     }
 
     public Task createTask(Task task) {
-        Task savedTask = taskRepository.save(task);
-        webSocketController.broadcastNewTask(savedTask);
-        return savedTask;
+        Optional<Project> project = projectRepository.findById(task.getProjectId());
+        if (project.isEmpty()) {
+            throw new RuntimeException("Project not found");
+        }
+
+        return taskRepository.save(task);
     }
 
     public Optional<Task> updateTask(Long id, Task updatedTask) {
@@ -54,4 +64,14 @@ public class TaskService {
         }
         return false;
     }
+
+    // Fetch all tasks for the project that aren't assigned to a sprint (Backlog)
+    public List<Task> getBacklogTasks(Long projectId) {
+        return taskRepository.findByProjectIdAndSprintIdIsNull(projectId);
+    }
+
+    public List<Task> getTasksByStatus(Long projectId, TaskStatus status) {
+        return taskRepository.findByProjectIdAndStatus(projectId, status);
+    }
+
 }

@@ -1,7 +1,8 @@
 package com.teamsync.backend.model;
 
 public enum TaskStatus {
-    PENDING,
+    TO_DO,
     IN_PROGRESS,
-    COMPLETED
+    TESTING,
+    DONE
 }

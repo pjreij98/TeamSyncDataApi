@@ -18,22 +18,22 @@ public class Task {
     private Long id;
 
     private String title;
-
     private String description;
-
-    private TaskStatus status; // e.g., Pending, In Progress, Completed
-
-    private String priority; // e.g., Low, Medium, High
-
+    private TaskStatus status;
+    private String priority;
     private LocalDateTime deadline;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
+
+    @Column(name = "project_id", nullable = false)
+    private Long projectId;
+
+    @Column(name = "sprint_id")
+    private Long sprintId;
 
     @PrePersist
     protected void onCreate() {
